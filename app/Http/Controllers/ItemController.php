@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Repositories\ItemRepository;
 use Illuminate\Http\Request;
+use Cache;
 
 class ItemController extends Controller
 {
@@ -17,9 +18,13 @@ class ItemController extends Controller
 
     public function detail($checklistId, $itemId)
     {
-        $response = $this->_rep->getOne($itemId, ['checklistId' => $checklistId]);
+        $key = md5('items_' . $itemId . '_' . $checklistId);
 
-        return $this->response($response);
+        $data = Cache::remember($key, env('CACHE_DURATION', 0), function () use ($itemId, $checklistId) {
+            return $this->_rep->getOne($itemId, ['checklistId' => $checklistId]);
+        });
+
+        return $this->response($data);
     }
 
     public function create(Request $request, $checklistId)

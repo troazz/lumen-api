@@ -46,6 +46,7 @@ class Repository
                     'response' => $rows,
                 ];
             } catch (Exception $e) {
+                dd($e);
                 $response = [
                     'code'  => '500',
                     'error' => 'Server Error',
@@ -72,7 +73,7 @@ class Repository
                 }
                 $row = $row->whereId($id)->firstOrFail();
 
-                $row      = $this->formatRow($row->toArray(), 'checklists');
+                $row      = $this->formatRow($row->toArray(), $this->type);
                 $response = [
                     'code'     => '200',
                     'response' => ['data' => $row],
@@ -83,6 +84,7 @@ class Repository
                     'error' => 'Not Found',
                 ];
             } catch (Exception $e) {
+                dd($e);
                 $response = [
                     'code'  => '500',
                     'error' => 'Server Error',
@@ -140,6 +142,8 @@ class Repository
         unset($row['id']);
         if ($type == 'checklists') {
             $self = route('checklists.detail', ['checklistId' => $id]);
+        } if ($type == 'history') {
+            $self = route('history.detail', ['historyId' => $id]);
         } else {
             unset($row['checklist']);
             $self = route('items.detail', ['checklistId' => $row['checklist_id'], 'itemId' => $id]);

@@ -13,6 +13,10 @@
 
 $router->group(['middleware' => 'auth'], function () use ($router) {
     $router->group(['prefix' => 'checklists'], function() use ($router) {
+        $router->group(['prefix' => 'histories'], function() use ($router) {
+            $router->get('/', ['as' => 'history', 'uses' => 'HistoryController@all']);
+            $router->get('/{historyId}', ['as' => 'history.detail', 'uses' => 'HistoryController@detail']);
+        });
         $router->get('{checklistId}', ['as' => 'checklists.detail', 'uses' => 'ChecklistController@detail']);
         $router->patch('{checklistId}', 'ChecklistController@update');
         $router->delete('{checklistId}', 'ChecklistController@delete');
@@ -31,10 +35,6 @@ $router->group(['middleware' => 'auth'], function () use ($router) {
         });
 
         $router->get('items/summaries', 'ChecklistController@summary');
-        // $router->group(['prefix' => 'histories'], function() use ($router) {
-        //     $router->get('/', 'ChecklistController@histories');
-        //     $router->get('{historyId}', 'ChecklistController@history');
-        // });
     });
 });
 

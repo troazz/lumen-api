@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repositories\HistoryRepository;
 use Illuminate\Database\Eloquent\Model;
 
 class Item extends Model
@@ -31,8 +32,21 @@ class Item extends Model
         return $this->belongsTo('App\Models\Checklist');
     }
 
-    public function history()
+    public function histories()
     {
         return $this->morphMany('App\Models\History', 'loggable');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($item) {
+            HistoryRepository::logCreatedItem($item);
+        });
+
+        static::updated(function ($item) {
+            HistoryRepository::logUpdatedItem($item);
+        });
     }
 }

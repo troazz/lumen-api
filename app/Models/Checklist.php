@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Repositories\HistoryRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,8 +38,21 @@ class Checklist extends Model
         return $this->hasMany('App\Models\Item');
     }
 
-    public function history()
+    public function histories()
     {
         return $this->morphMany('App\Models\History', 'loggable');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($checklist) {
+            HistoryRepository::logCreatedChecklist($checklist);
+        });
+
+        static::updated(function ($checklist) {
+            HistoryRepository::logUpdatedChecklist($checklist);
+        });
     }
 }
