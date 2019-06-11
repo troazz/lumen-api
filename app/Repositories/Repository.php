@@ -9,12 +9,16 @@ use Illuminate\Support\Facades\Validator;
 
 class Repository
 {
+    const LIMIT  = 10;
+    const OFFSET = 0;
+
     protected $model;
     protected $type;
-    protected $allowed_include         = ['items'];
-    protected $allowed_filter          = ['description', 'is_completed', 'completed_at'];
-    protected $allowed_filter_operator = ['like', '!like', 'is', '!is', 'in', '!in'];
-    protected $allowed_sort_n_field    = [
+    public $allowed_include         = ['items'];
+    public $allowed_filter          = ['description', 'is_completed', 'completed_at'];
+    public $allowed_filter_operator = ['like', '!like', 'is', '!is', 'in', '!in'];
+    public $allowed_sort_n_field    = [
+        'id',
         'description',
         'task_id',
         'due',
@@ -46,7 +50,6 @@ class Repository
                     'response' => $rows,
                 ];
             } catch (Exception $e) {
-                dd($e);
                 $response = [
                     'code'  => '500',
                     'error' => 'Server Error',
@@ -68,8 +71,8 @@ class Repository
         if (! $errors) {
             try {
                 $row = $this->model;
-                if (! empty($params['include']) && $params['include'] == 'items') {
-                    $row = $row->with('items');
+                if (! empty($params['include'])) {
+                    $row = $row->with($params['include']);
                 }
                 $row = $row->whereId($id)->firstOrFail();
 
@@ -84,7 +87,6 @@ class Repository
                     'error' => 'Not Found',
                 ];
             } catch (Exception $e) {
-                dd($e);
                 $response = [
                     'code'  => '500',
                     'error' => 'Server Error',
@@ -142,7 +144,7 @@ class Repository
         unset($row['id']);
         if ($type == 'checklists') {
             $self = route('checklists.detail', ['checklistId' => $id]);
-        } if ($type == 'history') {
+        } elseif ($type == 'history') {
             $self = route('history.detail', ['historyId' => $id]);
         } else {
             unset($row['checklist']);
@@ -238,8 +240,8 @@ class Repository
 
     protected function getRows($params)
     {
-        $limit  = empty($params['page']['limit']) ? 10 : $params['page']['limit'];
-        $offset = empty($params['page']['offset']) ? 0 : $params['page']['offset'];
+        $limit  = empty($params['page']['limit']) ? self::LIMIT : $params['page']['limit'];
+        $offset = empty($params['page']['offset']) ? self::OFFSET : $params['page']['offset'];
         $rows   = $this->model;
 
         if (! empty($params['filter'])) {

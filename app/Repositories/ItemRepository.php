@@ -26,7 +26,7 @@ class ItemRepository extends Repository
             'urgency'     => 'nullable|numeric',
         ];
         $this->updateRules = [
-            'description' => 'nullable',
+            'description' => 'sometimes|required',
             'asignee_id'  => 'nullable|numeric',
             'task_id'     => 'nullable|numeric',
             'due'         => 'nullable|date_format:Y-m-d H:i:s',
@@ -286,7 +286,7 @@ class ItemRepository extends Repository
 
     private function _validateDataCompletion($data)
     {
-        if (empty($data)) {
+        if (empty($data['data'])) {
             return ['attributes' => 'Attributes not specified correctly'];
         }
         $validator = Validator::make($data, [

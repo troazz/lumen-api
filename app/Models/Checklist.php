@@ -54,5 +54,9 @@ class Checklist extends Model
         static::updated(function ($checklist) {
             HistoryRepository::logUpdatedChecklist($checklist);
         });
+
+        static::created(function ($checklist) {
+            HistoryRepository::logDeletedChecklist($checklist);
+        });
     }
 }

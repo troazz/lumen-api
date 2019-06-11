@@ -39,9 +39,11 @@ class HistoryRepository extends Repository
             }
             if ($field == 'completed_at' && $value) {
                 $action = 'completed';
+                $value = 1;
             }
             if ($field == 'completed_at' && ! $value) {
                 $action = 'incompleted';
+                $value = 0;
             }
 
             self::saveLog($item, $action, $value);
@@ -77,7 +79,17 @@ class HistoryRepository extends Repository
         self::saveLog($item, 'created', $item->id);
     }
 
-    public static function saveLog($model, $action, $value)
+    public static function logDeletedChecklist(Checklist $checklist)
+    {
+        self::saveLog($checklist, 'deleted', $checklist->id);
+    }
+
+    public static function logDeletedItem(Item $item)
+    {
+        self::saveLog($item, 'deleted', $item->id);
+    }
+
+    public static function saveLog(Object $model, $action, $value)
     {
         $history         = new History();
         $history->action = $action;

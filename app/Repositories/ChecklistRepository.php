@@ -28,9 +28,9 @@ class ChecklistRepository extends Repository
             'urgency'       => 'nullable|numeric',
         ];
         $this->updateRules = [
-            'object_id'     => 'nullable',
-            'object_domain' => 'nullable',
-            'description'   => 'nullable',
+            'object_id'     => 'sometimes|required',
+            'object_domain' => 'sometimes|required',
+            'description'   => 'sometimes|required',
             'items'         => 'nullable|array',
             'task_id'       => 'nullable|numeric',
             'due'           => 'nullable|date_format:Y-m-d H:i:s',
@@ -117,7 +117,6 @@ class ChecklistRepository extends Repository
                     'error' => 'Not Found',
                 ];
             } catch (Exception $e) {
-                dd($e);
                 $response = [
                     'code'  => '500',
                     'error' => 'Server Error',

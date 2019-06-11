@@ -48,5 +48,9 @@ class Item extends Model
         static::updated(function ($item) {
             HistoryRepository::logUpdatedItem($item);
         });
+
+        static::deleted(function ($item) {
+            HistoryRepository::logDeletedItem($item);
+        });
     }
 }
