@@ -6,6 +6,7 @@ use App\Models\Checklist;
 use App\Models\History;
 use App\Models\Item;
 use Auth;
+use App\Models\User;
 
 class HistoryRepository extends Repository
 {
@@ -93,7 +94,7 @@ class HistoryRepository extends Repository
     {
         $history         = new History();
         $history->action = $action;
-        $history->uid    = Auth::user()->id;
+        $history->uid    = Auth::user() ? Auth::user()->id : User::inRandomOrder()->first()->id;
         $history->value  = $value;
 
         $model->histories()->save($history);

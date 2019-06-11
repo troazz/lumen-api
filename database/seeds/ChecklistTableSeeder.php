@@ -13,10 +13,10 @@ class ChecklistTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Checklist::class, 10)
+        factory(Checklist::class, 20)
             ->create()
             ->each(function ($checklist) {
-                foreach (range(1, 5) as $i) {
+                foreach (range(1, rand(3, 10)) as $i) {
                     $checklist->items()->save(factory(Item::class)->make());
                 }
             });
