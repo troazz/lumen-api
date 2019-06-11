@@ -14,6 +14,7 @@ How to install:
 Credential for basic auth:
 - **Email**: admin@here.com
 - **Password**: password
+
 Note: all seeded users using password **password**
 
 #### API Documentation
